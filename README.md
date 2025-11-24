@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SpeedTest Indo
 
-## Getting Started
+Aplikasi web modern untuk menguji kecepatan internet secara real-time (Download, Upload, Ping, Jitter) dengan antarmuka yang responsif dan futuristik.
 
-First, run the development server:
+![SpeedTest Indo Preview](public/gauge-speed.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Fitur Utama
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Real-Time Speed Measurement**: Pengukuran akurat menggunakan *multi-stream parallel connections* untuk Download dan Upload.
+- **Custom Speed Gauge**: Visualisasi speedometer kustom dengan animasi 60fps (menggunakan `requestAnimationFrame` interpolation) yang mulus.
+- **Responsive Design**: Tampilan optimal di Desktop maupun Mobile, dengan layout adaptif dan font *Plus Jakarta Sans*.
+- **Modern UI**: Tema warna *Cyan & Slate* (Dark Mode), animasi transisi halus, dan tipografi yang jelas.
+- **Accurate Ping**: Endpoint khusus (`/api/test/ping`) tanpa delay untuk pengukuran latensi minimal.
+- **Start Button Overlay**: Tombol mulai yang interaktif dan terintegrasi dengan gauge.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Font**: Plus Jakarta Sans
 
-## Learn More
+## 📦 Cara Menjalankan (Lokal)
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone Repository**:
+   ```bash
+   git clone https://github.com/username/speedtest-indo.git
+   cd speedtest-indo
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Jalankan Development Server**:
+   ```bash
+   npm run dev
+   ```
+   Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
 
-## Deploy on Vercel
+4. **Build untuk Produksi**:
+   ```bash
+   npm run build
+   npm start
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🐳 Cara Menjalankan (Docker)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Aplikasi ini sudah dilengkapi dengan konfigurasi **Docker** (Standalone Output) untuk deployment yang mudah dan ringan.
+
+### Menggunakan Docker Compose (Recommended)
+
+Pastikan Docker dan Docker Compose sudah terinstall.
+
+1. **Build & Run**:
+   ```bash
+   docker-compose up -d --build
+   ```
+
+2. **Akses Aplikasi**:
+   Buka browser dan akses `http://localhost:3000` (atau IP VPS Anda).
+
+3. **Stop Aplikasi**:
+   ```bash
+   docker-compose down
+   ```
+
+## ☁️ Deployment ke VPS
+
+1. Push kode ke repository Git Anda.
+2. SSH ke VPS Anda.
+3. Clone repository di VPS.
+4. Jalankan perintah `docker-compose up -d --build`.
+5. (Opsional) Gunakan Nginx sebagai reverse proxy jika ingin menggunakan domain dan HTTPS.
+
+## 📝 Lisensi
+
+Project ini dibuat untuk tujuan edukasi dan portofolio.
