@@ -1,10 +1,16 @@
 import { NextResponse } from 'next/server';
 
-// Pre-allocate a buffer to avoid GC overhead during high-speed transfer
+// Pre-allocate a buffer with HIGH ENTROPY to prevent compression
 const CHUNK_SIZE = 1024 * 64; // 64KB
-const TOTAL_CHUNKS = 800; // ~50MB (Should be enough for a quick test, client can fetch multiple times)
 const buffer = new Uint8Array(CHUNK_SIZE);
-buffer.fill(Math.floor(Math.random() * 256));
+
+// Fill with random data
+for (let i = 0; i < CHUNK_SIZE; i++) {
+  buffer[i] = Math.floor(Math.random() * 256);
+}
+
+// Total size per request approx 50MB
+const TOTAL_CHUNKS = 800; 
 
 export async function GET() {
   let chunksSent = 0;

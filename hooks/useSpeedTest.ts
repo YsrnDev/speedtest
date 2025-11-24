@@ -48,8 +48,8 @@ export function useSpeedTest() {
       const pings: number[] = [];
       const pingCount = 10; // Increase sample size for better jitter accuracy
 
-      // Using internal API endpoint for consistent latency measurement
-      const pingTarget = '/api/test/ping'; 
+      // Using static file for lowest latency (bypass Next.js API routing overhead)
+      const pingTarget = '/ping.txt'; 
 
       for (let i = 0; i < pingCount; i++) {
         if (signal.aborted) return;
