@@ -25,8 +25,8 @@ Aplikasi web modern untuk menguji kecepatan internet secara real-time (Download,
 
 1. **Clone Repository**:
    ```bash
-   git clone https://github.com/username/speedtest-indo.git
-   cd speedtest-indo
+   git clone https://github.com/YsrnDev/speedtest.git
+   cd speedtest
    ```
 
 2. **Install Dependencies**:
