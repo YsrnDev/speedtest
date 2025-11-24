@@ -2,7 +2,19 @@
 
 Aplikasi web modern untuk menguji kecepatan internet secara real-time (Download, Upload, Ping, Jitter) dengan antarmuka yang responsif dan futuristik.
 
-![SpeedTest Indo Preview](public/gauge-speed.png)
+## 📸 Preview
+
+<p align="center">
+  <strong>Desktop</strong><br/>
+  <img src="public/Speedtest-preview/desktop-01.png" width="45%" alt="Desktop View 1">
+  <img src="public/Speedtest-preview/desktop-02.png" width="45%" alt="Desktop View 2">
+</p>
+
+<p align="center">
+  <strong>Mobile</strong><br/>
+  <img src="public/Speedtest-preview/mobile-01.png" height="400" alt="Mobile View 1">
+  <img src="public/Speedtest-preview/mobile-02.png" height="400" alt="Mobile View 2">
+</p>
 
 ## 🚀 Fitur Utama
 

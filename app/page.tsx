@@ -83,7 +83,7 @@ export default function Home() {
                <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-white transform skew-x-12 fill-white" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-              SpeedTest <span className="text-cyan-400">Indo</span>
+              Speed <span className="text-cyan-400">Test</span>
             </h1>
           </div>
         </div>
@@ -143,7 +143,7 @@ export default function Home() {
       </div>
       
       <footer className="w-full p-6 text-center text-slate-600 text-sm border-t border-slate-900/50 backdrop-blur-sm relative z-10">
-        <p>&copy; 2025 SpeedTest Indo. Dibuat dengan Next.js & Tailwind.</p>
+        <p>&copy; 2025 SpeedTest. Made with ❤️ by YSRNDEV.</p>
       </footer>
     </main>
   );
