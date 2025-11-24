@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# System Files
+Thumbs.db
+Desktop.ini
+
+# IDEs
+.vscode
+.idea
+
+# Factory AI
+.factory
