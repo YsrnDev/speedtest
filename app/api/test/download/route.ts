@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 // Pre-allocate a buffer with HIGH ENTROPY to prevent compression
-const CHUNK_SIZE = 1024 * 64; // 64KB
+const CHUNK_SIZE = 1024 * 1024; // 1MB
 const buffer = new Uint8Array(CHUNK_SIZE);
 
 // Fill with random data
@@ -9,8 +9,8 @@ for (let i = 0; i < CHUNK_SIZE; i++) {
   buffer[i] = Math.floor(Math.random() * 256);
 }
 
-// Total size per request approx 3GB (enough to avoid reconnection)
-const TOTAL_CHUNKS = 50000; 
+// Total size per request approx 4GB (enough to avoid reconnection)
+const TOTAL_CHUNKS = 4000; 
 
 export async function GET() {
   let chunksSent = 0;

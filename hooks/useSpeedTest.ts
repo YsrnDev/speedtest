@@ -131,8 +131,9 @@ export function useSpeedTest() {
           
           try {
             const response = await fetch(`/api/test/download?t=${Date.now()}&s=${index}`, { 
-              signal: controller.signal 
-            });
+              signal: controller.signal,
+              priority: 'high'
+            } as any);
             
             const reader = response.body?.getReader();
             if (!reader) break;
