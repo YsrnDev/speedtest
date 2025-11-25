@@ -216,13 +216,13 @@ export function useSpeedTest() {
       const uploadStart = performance.now();
       
       // Reset metrics for upload
-      totalUploadedBytes = 0;
+      let totalUploadedBytes = 0;
       let uploadWarmupBytes = 0;
       let uploadWarmupEndTime = 0;
       let lastUploadBytes = 0;
       let lastUploadTime = uploadStart;
       
-      isUploadActive = true;
+      let isUploadActive = true;
       
       // 20MB chunk
       const chunkSize = 20 * 1024 * 1024;
