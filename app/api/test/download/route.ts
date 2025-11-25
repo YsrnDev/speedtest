@@ -9,8 +9,8 @@ for (let i = 0; i < CHUNK_SIZE; i++) {
   buffer[i] = Math.floor(Math.random() * 256);
 }
 
-// Total size per request approx 50MB
-const TOTAL_CHUNKS = 800; 
+// Total size per request approx 3GB (enough to avoid reconnection)
+const TOTAL_CHUNKS = 50000; 
 
 export async function GET() {
   let chunksSent = 0;

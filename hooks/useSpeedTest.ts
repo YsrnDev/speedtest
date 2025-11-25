@@ -99,6 +99,7 @@ export function useSpeedTest() {
       // --- DOWNLOAD PHASE (Parallel Streams) ---
       setStatus('downloading');
       const downloadDurationLimit = 10000; // 10 seconds
+      const warmupDuration = 2000; // 2 seconds warmup
       const downloadStart = performance.now();
       
       // Use 4 parallel streams to saturate bandwidth
@@ -106,6 +107,12 @@ export function useSpeedTest() {
       let totalBytesLoaded = 0;
       let activeStreams = 0;
       let isDownloadActive = true;
+      
+      // Metrics for calculation
+      let warmupBytes = 0;
+      let warmupEndTime = 0;
+      let lastBytes = 0;
+      let lastTime = downloadStart;
       
       // Shared state for all streams
       const streamControllers: AbortController[] = [];
@@ -150,12 +157,31 @@ export function useSpeedTest() {
              return;
          }
          const now = performance.now();
-         const durationSec = (now - downloadStart) / 1000;
+         const durationMs = now - downloadStart;
+         const durationSec = durationMs / 1000;
          
-         if (durationSec > 0.1) { // Avoid divide by zero
-            // Calculate instantaneous speed
-            const speedMbps = (totalBytesLoaded * 8 / durationSec) / 1_000_000;
-            setCurrentSpeed(speedMbps);
+         // Check for warmup completion
+         if (durationMs >= warmupDuration && warmupEndTime === 0) {
+             warmupBytes = totalBytesLoaded;
+             warmupEndTime = now;
+         }
+
+         // Calculate Instant Speed for UI (moving window)
+         const timeDiff = (now - lastTime) / 1000;
+         if (timeDiff > 0.1) { 
+            const bytesDiff = totalBytesLoaded - lastBytes;
+            const instantSpeedMbps = (bytesDiff * 8 / timeDiff) / 1_000_000;
+            
+            // Update references
+            lastBytes = totalBytesLoaded;
+            lastTime = now;
+
+            // Smooth updates (optional, but good for UI)
+            setCurrentSpeed(prev => {
+                // exponential smoothing: new = alpha * current + (1 - alpha) * prev
+                // alpha = 0.3 feels responsive but not jittery
+                return prev * 0.7 + instantSpeedMbps * 0.3;
+            });
             
             const timeProgress = Math.min(durationSec / (downloadDurationLimit / 1000), 1);
             setProgress(10 + (timeProgress * 40)); // 10% to 50%
@@ -168,8 +194,16 @@ export function useSpeedTest() {
       clearTimeout(downloadTimer);
       clearInterval(uiInterval);
 
-      const finalDownloadDuration = (performance.now() - downloadStart) / 1000;
-      const finalDownloadSpeed = (totalBytesLoaded * 8 / finalDownloadDuration) / 1_000_000;
+      // Final Calculation (Post-Warmup Average)
+      const finalNow = performance.now();
+      const finalDuration = (finalNow - (warmupEndTime || downloadStart)) / 1000; // Use full duration if warmup didn't finish (unlikely)
+      const finalBytes = totalBytesLoaded - (warmupEndTime ? warmupBytes : 0);
+      
+      // Protect against divide by zero or negative
+      const validDuration = finalDuration > 0 ? finalDuration : (finalNow - downloadStart) / 1000;
+      const validBytes = finalDuration > 0 ? finalBytes : totalBytesLoaded;
+
+      const finalDownloadSpeed = (validBytes * 8 / validDuration) / 1_000_000;
       setResults(prev => ({ ...prev, download: finalDownloadSpeed }));
       setCurrentSpeed(0);
 
@@ -180,8 +214,15 @@ export function useSpeedTest() {
       setStatus('uploading');
       const uploadDurationLimit = 10000; 
       const uploadStart = performance.now();
-      let totalUploadedBytes = 0;
-      let isUploadActive = true;
+      
+      // Reset metrics for upload
+      totalUploadedBytes = 0;
+      let uploadWarmupBytes = 0;
+      let uploadWarmupEndTime = 0;
+      let lastUploadBytes = 0;
+      let lastUploadTime = uploadStart;
+      
+      isUploadActive = true;
       
       // 20MB chunk
       const chunkSize = 20 * 1024 * 1024;
@@ -231,11 +272,25 @@ export function useSpeedTest() {
          // Sum all bytes from all streams
          const currentTotal = streamBytes.reduce((a, b) => a + b, 0);
          const now = performance.now();
-         const durationSec = (now - uploadStart) / 1000;
+         const durationMs = now - uploadStart;
+         const durationSec = durationMs / 1000;
          
-         if (durationSec > 0.1) {
-            const speedMbps = (currentTotal * 8 / durationSec) / 1_000_000;
-            setCurrentSpeed(speedMbps);
+         // Check warmup
+         if (durationMs >= warmupDuration && uploadWarmupEndTime === 0) {
+             uploadWarmupBytes = currentTotal;
+             uploadWarmupEndTime = now;
+         }
+         
+         const timeDiff = (now - lastUploadTime) / 1000;
+         
+         if (timeDiff > 0.1) {
+            const bytesDiff = currentTotal - lastUploadBytes;
+            const instantSpeedMbps = (bytesDiff * 8 / timeDiff) / 1_000_000;
+            
+            lastUploadBytes = currentTotal;
+            lastUploadTime = now;
+
+            setCurrentSpeed(prev => prev * 0.7 + instantSpeedMbps * 0.3);
             
             const timeProgress = Math.min(durationSec / (uploadDurationLimit / 1000), 1);
             setProgress(50 + (timeProgress * 50)); // 50% to 100%
@@ -247,9 +302,17 @@ export function useSpeedTest() {
       clearTimeout(uploadTimer);
       clearInterval(uploadUiInterval);
       
+      // Final Upload Calculation (Post-Warmup)
+      const finalUploadNow = performance.now();
       const finalTotalUpload = streamBytes.reduce((a, b) => a + b, 0);
-      const finalUploadDuration = (performance.now() - uploadStart) / 1000;
-      const finalUploadSpeed = (finalTotalUpload * 8 / finalUploadDuration) / 1_000_000;
+      
+      const finalUploadDuration = (finalUploadNow - (uploadWarmupEndTime || uploadStart)) / 1000;
+      const finalUploadBytes = finalTotalUpload - (uploadWarmupEndTime ? uploadWarmupBytes : 0);
+
+      const validUploadDuration = finalUploadDuration > 0 ? finalUploadDuration : (finalUploadNow - uploadStart) / 1000;
+      const validUploadBytes = finalUploadDuration > 0 ? finalUploadBytes : finalTotalUpload;
+      
+      const finalUploadSpeed = (validUploadBytes * 8 / validUploadDuration) / 1_000_000;
       setResults(prev => ({ ...prev, upload: finalUploadSpeed }));
 
       // --- FINISH ---
