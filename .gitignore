@@ -50,3 +50,6 @@ Desktop.ini
 
 # Factory AI
 .factory
+
+# Generated Test Files
+public/download.bin

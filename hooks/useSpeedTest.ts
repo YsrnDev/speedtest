@@ -130,7 +130,8 @@ export function useSpeedTest() {
           streamControllers.push(controller);
           
           try {
-            const response = await fetch(`/api/test/download?t=${Date.now()}&s=${index}`, { 
+            // Use static file for maximum throughput (bypass Node.js stream overhead)
+            const response = await fetch(`/download.bin?t=${Date.now()}&s=${index}`, { 
               signal: controller.signal,
               priority: 'high'
             } as any);
